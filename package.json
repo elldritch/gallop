@@ -1,6 +1,6 @@
 {
   "name": "gallop",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Polls REST APIs for changes.",
   "keywords": ["rest", "api", "poll"],
   "license": "MIT",
@@ -10,15 +10,16 @@
     "email": "contact@lehaozhang.com"
   },
   
-  "main": "./dist/daemon.js",
+  "main": "index.js",
   
   "private": false,
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git://github.com/The2ndOne3/gallop.git"
   },
 
   "scripts": {
+    "prepublish": "grunt",
     "test": "mocha --reporter spec --compilers coffee:coffee-script"
   },
   "dependencies": {
