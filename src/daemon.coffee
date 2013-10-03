@@ -1,5 +1,5 @@
 rest = require 'restler'
-util = require 'util'
+_ = require 'underscore'
 
 class Daemon
   constructor: (options) ->
@@ -37,25 +37,34 @@ class Daemon
   _refresh: ->
     responses = {}
     completed = 0
-    expecting = @targets.length
-    for id, target of @targets
+    expected = Object.keys(@targets).length
+    for target_id, target of @targets
       req = rest.request target.url, target.options
       responses = {}
-      req.on 'complete', (result, res) ->
-        responses[JSON.stringify target] = 
+      req.on 'complete', (result, res) =>
+        responses[target_id] = 
           result: result
           response: res
           last: target.last
           callback: target.callback
-        @targets[id].last = JSON.stringify(result) + JSON.stringify res
 
         completed++
 
-        if completed == expecting
-          for key, response of responses
-            previous_response_state = response.last
-            if JSON.stringify(response.result) + JSON.stringify response.response != previous_response_state
-              response.callback response.result, response.res
+        if completed is expected
+          for response_id, response of responses
+            # console.log 'Comparing states:', response.result, response.last?.result
+
+            if response.result instanceof Error
+              response.callback response.result, null, null
+            else if not _.isEqual {
+              result: response.result
+              response: response.response
+            }, response.last
+              response.callback null, response.result, response.response
+
+            @targets[target_id].last = 
+              result: result
+              response: res
 
           if @active
             setTimeout @_refresh, @interval

@@ -1,9 +1,24 @@
 restify = require 'restify'
+server = restify.createServer()
 
-module.exports = () ->
-  server = restify.createServer()
-  server.get '/test', (req, res, next) ->
-    res.send 'Hello.'
+test_port = 1337
+responder = () ->
+  'Test response for index'
 
-  server.listen 8080, () ->
-    console.log "I'm listening."
+module.exports = 
+  make_server: (done) ->
+    server.get '/', (req, res, next) ->
+      # console.log 'Request made to test server index'
+      # console.log 'Response:', responder()
+      res.send responder()
+      return next()
+
+    server.listen test_port, () ->
+      # console.log "Test server listening on port", test_port
+      done()
+  
+  test_port: test_port
+  
+  change_server_response: () ->
+    responder = () ->
+      'Test response 2 for index'

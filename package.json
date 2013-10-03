@@ -22,7 +22,8 @@
     "test": "mocha --reporter spec --compilers coffee:coffee-script"
   },
   "dependencies": {
-    "restler": "*"
+    "restler": "*",
+    "underscore": "*"
   },
   "devDependencies": {
     "coffee": "*",

@@ -1,6 +1,8 @@
 should = require('chai').should()
 Daemon = require '../src/daemon'
-server = require('./mock-server')()
+
+server = require('./mock-server')
+test_port = server.test_port
 
 describe 'Daemon', ->
   describe '#subscribe', ->
@@ -38,10 +40,22 @@ describe 'Daemon', ->
       daemon.active.should.equal(false)
 
   describe '#_refresh', ->
-    it 'should properly connect', (done) ->
+    before (done) ->
+      server.make_server done
+
+    it 'should test for state changes', (done) ->
       daemon = new Daemon
-      daemon.subscribe '//localhost:8080', {}, (result, res) ->
-        console.log result
-        done()
+      refreshes = 0
+
+      daemon.subscribe 'http://localhost:' + test_port + '/', {}, (err, result, res) ->
+        # console.log err, result
+        refreshes++
+
+        if refreshes == 1
+          server.change_server_response()
+          daemon._refresh()
+
+        if refreshes == 2
+          done()
+
       daemon._refresh()
-    it 'should test for state changes'

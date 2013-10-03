@@ -1,9 +1,9 @@
 (function() {
-  var Daemon, rest, util;
+  var Daemon, rest, _;
 
   rest = require('restler');
 
-  util = require('util');
+  _ = require('underscore');
 
   Daemon = (function() {
     function Daemon(options) {
@@ -48,35 +48,44 @@
     };
 
     Daemon.prototype._refresh = function() {
-      var completed, expecting, id, req, responses, target, _ref;
+      var completed, expected, req, responses, target, target_id, _ref,
+        _this = this;
       responses = {};
       completed = 0;
-      expecting = this.targets.length;
+      expected = Object.keys(this.targets).length;
       _ref = this.targets;
-      for (id in _ref) {
-        target = _ref[id];
+      for (target_id in _ref) {
+        target = _ref[target_id];
         req = rest.request(target.url, target.options);
         responses = {};
         req.on('complete', function(result, res) {
-          var key, previous_response_state, response;
-          responses[JSON.stringify(target)] = {
+          var response, response_id, _ref1;
+          responses[target_id] = {
             result: result,
             response: res,
             last: target.last,
             callback: target.callback
           };
-          this.targets[id].last = JSON.stringify(result) + JSON.stringify(res);
+          _this.targets[target_id].last = {
+            result: result,
+            response: res
+          };
           completed++;
-          if (completed === expecting) {
-            for (key in responses) {
-              response = responses[key];
-              previous_response_state = response.last;
-              if (JSON.stringify(response.result) + JSON.stringify(response.response !== previous_response_state)) {
-                response.callback(response.result, response.res);
+          if (completed === expected) {
+            for (response_id in responses) {
+              response = responses[response_id];
+              console.log('Comparing states:', response.result, (_ref1 = response.last) != null ? _ref1.result : void 0);
+              if (response.result instanceof Error) {
+                response.callback(response.result, null, null);
+              } else if (!_.isEqual({
+                result: response.result,
+                response: response.response
+              }, response.last)) {
+                response.callback(null, response.result, response.response);
               }
             }
-            if (this.active) {
-              return setTimeout(this._refresh, this.interval);
+            if (_this.active) {
+              return setTimeout(_this._refresh, _this.interval);
             }
           }
         });
