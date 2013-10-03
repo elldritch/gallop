@@ -1,7 +1,7 @@
 rest = require 'restler'
 _ = require 'underscore'
 
-class Daemon
+class Gallop
   constructor: (options) ->
     options ?= {}
     {@targets, @interval} = options
