@@ -1,0 +1,37 @@
+{
+  "name": "gallop",
+  "version": "0.0.1",
+  "description": "Polls REST APIs for changes.",
+  "keywords": ["rest", "api", "poll"],
+  "license": "MIT",
+  "author": {
+    "name": "Leo Zhang",
+    "url": "lehaozhang.com",
+    "email": "contact@lehaozhang.com"
+  },
+  
+  "main": "./dist/daemon.js",
+  
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+
+  "scripts": {
+    "test": "mocha --reporter spec --compilers coffee:coffee-script"
+  },
+  "dependencies": {
+    "restler": "*"
+  },
+  "devDependencies": {
+    "coffee": "*",
+
+    "grunt": "*",
+    "grunt-contrib-coffee": "*",
+
+    "mocha": "*",
+    "chai": "*",
+    "restify": "*"
+  }
+}
