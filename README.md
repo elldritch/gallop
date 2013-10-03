@@ -33,7 +33,7 @@ Arguments:
 
 * `options` -- An optional options object with keys:
   * `interval` -- The polling interval in milliseconds. Defaults to 1 minute.
-  <!-- * `targets` -- An array of targets (see below for specification of targets). -->
+  <!--- * `targets` -- An array of targets (see below for specification of targets). -->
 
 ```javascript
 var Gallop = require('gallop')
