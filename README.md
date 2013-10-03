@@ -2,6 +2,12 @@
 
 Gallop polls REST APIs at particular intervals to listen for changes.
 
+## Installation
+Gallop is the available on the NPM registry.
+```bash
+npm install gallop
+```
+
 ## Usage
 ```javascript
 var gallop = require('gallop')({
