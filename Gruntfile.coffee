@@ -7,5 +7,6 @@ module.exports = (grunt) ->
   }
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'new-task'
 
   grunt.registerTask 'default', ['coffee']
