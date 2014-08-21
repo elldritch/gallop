@@ -37,6 +37,15 @@
 
     "mocha": "*",
     "chai": "*",
-    "restify": "*"
+
+    "restify": "*",
+    "openport": "*",
+
+    "faker": "*"
+  },
+
+  "engines": {
+    "npm": "*",
+    "node": "*"
   }
 }

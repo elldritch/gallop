@@ -1,24 +1,15 @@
 restify = require 'restify'
-server = restify.createServer()
+faker = require 'faker'
 
-test_port = 1337
-responder = () ->
-  'Test response for index'
+module.exports = (port) ->
+  server = restify.createServer()
+  responder = (req, res, next) ->
+    res.send responder.message
+    next()
+  responder.message = faker.Helpers.createCard()
 
-module.exports = 
-  make_server: (done) ->
-    server.get '/', (req, res, next) ->
-      # console.log 'Request made to test server index'
-      # console.log 'Response:', responder()
-      res.send responder()
-      return next()
-
-    server.listen test_port, () ->
-      # console.log "Test server listening on port", test_port
-      done()
-  
-  test_port: test_port
-  
-  change_server_response: () ->
-    responder = () ->
-      'Test response 2 for index'
+  start_server: (done) ->
+    server.get '/', responder
+    server.listen port, done
+  change_server_response: ->
+    responder.message = faker.Helpers.createCard()
