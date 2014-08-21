@@ -1,24 +1,31 @@
+Promise = require 'bluebird'
+
 rest = require 'restler'
-_ = require 'underscore'
+equal = require 'deep-equal'
+
+ambi = Promise.promisify require 'ambi'
 
 class Gallop
-  constructor: (options) ->
-    options ?= {}
+  constructor: (options = {}) ->
     {@targets, @interval} = options
 
-    @interval ?= 60 * 1000
+    @interval ||= 60 * 1000
 
-    @targets ?= {}
+    @targets ||= {}
     @next_target = Object.keys(@targets).length
 
     @active = false
 
   subscribe: (url, options, callback) ->
     @targets[@next_target] =
-      url: url,
-      options: options,
+      url: url
+      options: options
       callback: callback
+      last:
+        data: undefined
+        response: undefined
     @next_target++
+
     @next_target - 1
 
   unsubscribe: (id) ->
@@ -35,39 +42,43 @@ class Gallop
     @
 
   _refresh: ->
-    responses = {}
-    completed = 0
-    expected = Object.keys(@targets).length
+    requests = []
     for target_id, target of @targets
-      req = rest.request target.url, target.options
-      responses = {}
-      req.on 'complete', (result, res) =>
-        responses[target_id] = 
-          result: result
-          response: res
-          last: target.last
-          callback: target.callback
+      requests.push new Promise (resolve, reject) ->
+        req = rest.request target.url, target.options
 
-        completed++
+        handle_request = (data, response) ->
+          if not equal target.last.data, data
+            resolve ambi target.callback, null, data, response
+              .then ->
+                target.last.data = data
+                target.last.response = response
 
-        if completed is expected
-          for response_id, response of responses
-            # console.log 'Comparing states:', response.result, response.last?.result
+                data
+          else
+            resolve data
 
-            if response.result instanceof Error
-              response.callback response.result, null, null
-            else if not _.isEqual {
-              result: response.result
-              response: response.response
-            }, response.last
-              response.callback null, response.result, response.response
+        handle_error = (err, response) ->
+          target.last.data = err
+          target.last.response = response
 
-            @targets[target_id].last = 
-              result: result
-              response: res
+          resolve ambi target.callback, err, null
+            .then ->
+              err
 
-          if @active
-            setTimeout @_refresh, @interval
+        req.on 'success', handle_request
+        req.on 'fail', handle_request
+
+        req.on 'error', handle_error
+        req.on 'timeout', (ms) ->
+          err = new Error 'Request timed out after ' + ms + ' milliseconds.'
+          err.ms = ms
+          handle_error err, null
+
+    requests.settle()
+      .then =>
+        if @active
+          setTimeout @_refresh, @interval
     @
 
-module.exports = Daemon
+module.exports = Gallop
