@@ -1,10 +1,9 @@
 # Gallop
-
 Gallop polls REST APIs at particular intervals to listen for changes.
 
 ## Installation
 Gallop is available on the NPM registry.
-```bash
+```shell
 npm install gallop
 ```
 
@@ -15,9 +14,9 @@ var gallop = require('gallop')({
 });
 
 // Add a target.
-gallop.subscribe('//rest-api.com/API', null, function(err, result, response){
+gallop.subscribe('//api-endpoint.provider.com/api', null, function(err, result, httpResponse){
   if(err){
-    console.error(err);
+    return console.error(err);
   }
   console.log(result);
 })
@@ -35,29 +34,34 @@ Arguments:
   * `interval` -- The polling interval in milliseconds. Defaults to 1 minute.
 
 ```javascript
-var Gallop = require('gallop')
+var Gallop = require('gallop');
 
-var options = {
+var daemon = new Gallop({
   interval: 500
-};
-var daemon = new Gallop(options);
+});
 ```
 
 ### Creating targets
-Gallop subscribes to targets, which are objects composed of a REST API URL, an options object for the request, and a callback that fires whenever the response from that API endpoint changes.
+A Gallop daemon subscribes to targets, which are composed of a REST API URL, an options object for the request, and a callback that fires whenever the response from that API endpoint changes.
 Arguments:
 
 * `url` -- A string endpoint URL
 * `options` -- An options object for the request -- see documentation for Restler's options
-* `callback` -- A callback that takes `err`, `result`, and `response` to be called whenever the data changes
+* `callback` -- A callback that takes `err`, `result`, and `httpResponse` to be called whenever the data changes
 
 ```javascript
-daemon.subscribe('//api-endpoint.provider.com/API', {
+daemon.subscribe('//api-endpoint.provider.com/api', {
   method: 'GET',
   query: {
     api_key: 'some API key',
+    some_field: 'some data for the field'
     // ...
   }
+}, function(err, result, httpResponse) {
+  if (err) {
+    return console.error(err);
+  }
+  console.log(result);
 });
 ```
 
@@ -81,18 +85,5 @@ daemon.start();
 daemon.stop();
 ```
 
-## Dependencies
-For basic usage:
-
-* Restler
-* Underscore
-
-For testing:
-
-* CoffeeScript
-* Mocha, Chai
-* Grunt, grunt-contrib-coffee
-* Restify
-
 ## License
-(C) 2013 Lehao Zhang. Released to the general public under the terms of the MIT license.
+&copy; 2014 Lehao Zhang. Released under the terms of the MIT license.
