@@ -86,4 +86,4 @@ daemon.stop();
 ```
 
 ## License
-&copy; 2014 Lehao Zhang. Released under the terms of the MIT license.
+&copy; 2013 Lehao Zhang. Released under the terms of the MIT license.

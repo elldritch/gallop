@@ -6,31 +6,32 @@
   "license": "MIT",
   "author": {
     "name": "Lehao Zhang",
-    "url": "http://lehaozhang.com",
-    "email": "contact@lehaozhang.com"
+    "url": "http://leozhang.me",
+    "email": "hello@leozhang.me"
   },
-  
-  "main": "index.js",
-  
-  "private": false,
+
+  "main": "./dist",
+
   "repository": {
     "type": "git",
-    "url": "git://github.com/The2ndOne3/gallop.git"
+    "url": "git://github.com/ilikebits/gallop.git"
   },
 
   "scripts": {
-    "prepublish": "grunt",
-    "test": "mocha --reporter spec --compilers coffee:coffee-script"
+    "prepublish": "./node_modules/grunt-cli/bin/grunt",
+    "test": "mocha --compilers coffee:coffee-script/register --reporter spec"
   },
   "dependencies": {
     "restler": "*",
-    "underscore": "*"
+    "bluebird": "*"
   },
   "devDependencies": {
-    "coffee": "*",
+    "coffee-script": "*",
 
     "grunt": "*",
+    "grunt-cli": "*",
     "grunt-contrib-coffee": "*",
+    "grunt-contrib-clean": "*",
 
     "mocha": "*",
     "chai": "*",
