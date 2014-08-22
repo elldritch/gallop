@@ -8,7 +8,7 @@ module.exports = (port) ->
     next()
   responder.message = faker.Helpers.createCard()
 
-  start_server: (done) ->
+  start: (done) ->
     server.get '/', responder
     server.listen port, done
   change_server_response: ->

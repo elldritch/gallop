@@ -49,12 +49,11 @@ class Gallop
 
         handle_request = (data, response) ->
           if not equal target.last.data, data
-            resolve ambi target.callback, null, data, response
-              .then ->
-                target.last.data = data
-                target.last.response = response
+            resolve ambi target.callback, null, data, response, (err, res) ->
+              target.last.data = data
+              target.last.response = response
 
-                data
+              data
           else
             resolve data
 
@@ -75,7 +74,7 @@ class Gallop
           err.ms = ms
           handle_error err, null
 
-    requests.settle()
+    Promise.settle requests
       .then =>
         if @active
           setTimeout @_refresh, @interval
