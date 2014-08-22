@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "restler": "*",
-    "deep-equal": "*",
     "ambi": "*",
     "bluebird": "*"
   },
@@ -39,6 +38,7 @@
     "chai": "*",
 
     "restify": "*",
+    "superagent": "*",
     "openport": "*",
 
     "faker": "*"
